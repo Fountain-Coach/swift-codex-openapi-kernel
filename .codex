@@ -1,5 +1,13 @@
 {
   "repo": "swift-codex-openapi-kernel",
   "codex-compatible": true,
-  "advertise": true
+  "advertise": true,
+  "structure": {
+    "openapi": "OpenAPI",
+    "source": "Sources",
+    "generated": "Generated",
+    "tests": "Tests"
+  },
+  "cli": "swift run generator --input OpenAPI/api.yaml --output Generated/",
+  "test": "swift test -v"
 }
