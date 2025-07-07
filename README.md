@@ -35,8 +35,7 @@ This repository implements a complete code generation workflow that:
 
 ```
 swift-codex-openapi-kernel/
-├── OpenAPI/
-│   └── api.yaml                  ← Input OpenAPI 3.1 specification
+├── FountainAi/openAPI/           ← Service specs in OpenAPI 3.1 format
 ├── Sources/
 │   └── Generator/                ← CLI tool source
 ├── Generated/
@@ -58,12 +57,13 @@ swift-codex-openapi-kernel/
    ```bash
    swift build -c release
    ```
-2. **Generate code from `api.yaml`**
+2. **Generate code for all FountainAI services**
    ```bash
    ./regenerate.sh
    ```
-   This command reads `OpenAPI/api.yaml` and writes the client and server code
-   under `Generated/`.
+   This command reads every `*.yml` spec under `FountainAi/openAPI/` and
+   emits a dedicated client and server for each service under
+   `Generated/Client/<Service>/` and `Generated/Server/<Service>/`.
 3. **Run the test suite**
    ```bash
    swift test
@@ -71,8 +71,8 @@ swift-codex-openapi-kernel/
 
 ### Updating the spec
 
-Edit `OpenAPI/api.yaml` to add or modify operations. Re-run
-`./regenerate.sh` whenever the spec changes to regenerate the Swift sources.
+Add or modify any service spec under `FountainAi/openAPI/`. Re-run
+`./regenerate.sh` whenever a spec changes to regenerate the Swift sources.
 
 ---
 
