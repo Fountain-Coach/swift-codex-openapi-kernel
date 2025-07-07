@@ -6,10 +6,10 @@ import ServerGenerator
 
 @main
 struct GeneratorCLI {
-    static func main() throws {
+    static func run(args: [String]) throws {
         var inputPath: String?
         var outputPath: String?
-        var iterator = CommandLine.arguments.dropFirst().makeIterator()
+        var iterator = args.makeIterator()
         while let arg = iterator.next() {
             switch arg {
             case "--input": inputPath = iterator.next()
@@ -28,5 +28,9 @@ struct GeneratorCLI {
         try ModelEmitter.emit(from: spec, to: outURL)
         try ClientGenerator.emitClient(from: spec, to: outURL.appendingPathComponent("Client"))
         try ServerGenerator.emitServer(from: spec, to: outURL.appendingPathComponent("Server"))
+    }
+
+    static func main() throws {
+        try run(args: Array(CommandLine.arguments.dropFirst()))
     }
 }

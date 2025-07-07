@@ -18,7 +18,11 @@ let package = Package(
             name: "Generator",
             dependencies: ["Parser", "ModelEmitter", "ClientGenerator", "ServerGenerator"]
         ),
-        .testTarget(name: "GeneratorTests", dependencies: ["Generator"]),
+        .testTarget(
+            name: "GeneratorTests",
+            dependencies: ["Generator"],
+            resources: [.process("Fixtures")]
+        ),
         .testTarget(name: "ServerTests", dependencies: ["ServerGenerator"]),
         .testTarget(name: "ParserTests", dependencies: ["Parser"]),
         .testTarget(name: "ClientGeneratorTests", dependencies: ["ClientGenerator", "Parser"]),
