@@ -10,5 +10,10 @@
         }
       }
     }
+  },
+  "paths": {
+    "/todos": {
+      "get": { "operationId": "GetTodos" }
+    }
   }
 }

@@ -38,10 +38,10 @@ This plan defines how Codex should build a Swift 6-native OpenAPI code generator
 
 ## 🔌 Phase 4 · Client SDK Generator
 
-- [ ] Generate `APIRequest.swift` and `APIClient.swift`.
-- [ ] Emit typed requests (e.g. `GetTodo.swift`).
-- [ ] Group by tag or path structure.
-- [ ] Test requests with mockable inputs.
+- [x] Generate `APIRequest.swift` and `APIClient.swift`.
+- [x] Emit typed requests (e.g. `GetTodo.swift`).
+- [x] Group by tag or path structure.
+- [x] Test requests with mockable inputs.
 
 ---
 

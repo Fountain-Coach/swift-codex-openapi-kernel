@@ -20,8 +20,8 @@ let package = Package(
         ),
         .testTarget(name: "GeneratorTests", dependencies: ["Generator"]),
         .testTarget(name: "ServerTests", dependencies: ["ServerGenerator"]),
-        .testTarget(name: "ParserTests", dependencies: ["Parser"])
-        ,
+        .testTarget(name: "ParserTests", dependencies: ["Parser"]),
+        .testTarget(name: "ClientGeneratorTests", dependencies: ["ClientGenerator", "Parser"]),
         .testTarget(
             name: "ModelEmitterTests",
             dependencies: ["ModelEmitter", "Parser"],
