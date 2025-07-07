@@ -24,7 +24,8 @@ public struct Handlers {
         return HTTPResponse()
     }
     public func healthHealthGet(_ request: HTTPRequest, body: NoBody?) async throws -> HTTPResponse {
-        return HTTPResponse()
+        let json = try JSONEncoder().encode(["status": "ok"])
+        return HTTPResponse(status: 200, headers: ["Content-Type": "application/json"], body: json)
     }
     public func listreflections(_ request: HTTPRequest, body: NoBody?) async throws -> HTTPResponse {
         return HTTPResponse()

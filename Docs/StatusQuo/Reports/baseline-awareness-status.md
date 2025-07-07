@@ -9,7 +9,7 @@ Spec path: `FountainAi/openAPI/v1/baseline-awareness.yml` (version 1.0.0).
 - Generated client SDK at `Generated/Client/baseline-awareness` now encodes request bodies and decodes typed responses
 - Generated server kernel at `Generated/Server/baseline-awareness` includes a minimal socket‑based runtime and typed model definitions
 - Router decodes JSON bodies into models and forwards them to typed handler methods
-- Handler implementations still return empty `HTTPResponse` objects and perform no persistence or analysis
+- `GET /health` now returns a structured JSON status while other handlers remain stubs
 - A Dockerfile is provided and build/run instructions are included in the repository README
 - No dedicated tests exercise this service beyond generator fixtures
 
