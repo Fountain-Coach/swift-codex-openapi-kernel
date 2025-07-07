@@ -7,6 +7,7 @@ This agenda outlines the steps to implement and document FountainAI's services a
 1. **Generate baseline code** using `OpenAPI/api.yaml`.
    - Run `./regenerate.sh` to produce the initial client and server under `Generated/`.
    - Verify the generated sources compile and tests pass.
+   - **Status:** Completed in the current repository. The baseline client and server are present under `Generated/` and all tests succeed.
 2. **Document the workflow** in `README.md`.
    - Provide a concise walkthrough explaining how the generator reads the spec and outputs Swift code.
    - Include the command line arguments and expected directory layout.
