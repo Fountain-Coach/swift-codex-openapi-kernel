@@ -1,4 +1,5 @@
 import Foundation
+import ServiceShared
 
 /// Persistence handlers wired to an in-memory Typesense client. This mimics the
 /// real Typesense-backed service without requiring the dependency during tests.
@@ -19,7 +20,7 @@ public struct Handlers {
         return HTTPResponse()
     }
     public func listcorpora(_ request: HTTPRequest) async throws -> HTTPResponse {
-        let ids = typesense.listCorpora()
+        let ids = await typesense.listCorpora()
         let data = try JSONEncoder().encode(ids)
         return HTTPResponse(body: data)
     }
@@ -28,13 +29,13 @@ public struct Handlers {
         guard let model = try? JSONDecoder().decode(CorpusCreateRequest.self, from: request.body) else {
             return HTTPResponse(status: 400)
         }
-        let resp = typesense.createCorpus(id: model.corpusId)
+        let resp = await typesense.createCorpus(id: model.corpusId)
         let data = try JSONEncoder().encode(resp)
         return HTTPResponse(body: data)
     }
 
     public func listfunctions(_ request: HTTPRequest) async throws -> HTTPResponse {
-        let items = typesense.listFunctions()
+        let items = await typesense.listFunctions()
         let data = try JSONEncoder().encode(items)
         return HTTPResponse(body: data)
     }
@@ -43,7 +44,7 @@ public struct Handlers {
         guard let function = try? JSONDecoder().decode(Function.self, from: request.body) else {
             return HTTPResponse(status: 400)
         }
-        typesense.addFunction(function)
+        await typesense.addFunction(function)
         let resp = SuccessResponse(message: "stored")
         let data = try JSONEncoder().encode(resp)
         return HTTPResponse(body: data)
@@ -53,7 +54,7 @@ public struct Handlers {
         guard let id = request.path.split(separator: "/").last else {
             return HTTPResponse(status: 404)
         }
-        guard let fn = typesense.functionDetails(id: String(id)) else {
+        guard let fn = await typesense.functionDetails(id: String(id)) else {
             return HTTPResponse(status: 404)
         }
         let data = try JSONEncoder().encode(fn)

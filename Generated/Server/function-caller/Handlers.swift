@@ -1,4 +1,5 @@
 import Foundation
+import ServiceShared
 
 /// Implements the Function Caller dispatch mechanism. Registered functions are
 /// looked up from the shared TypesenseClient and invoked via URLSession.
@@ -11,7 +12,7 @@ public struct Handlers {
         guard let id = request.path.split(separator: "/").last else {
             return HTTPResponse(status: 404)
         }
-        guard let fn = TypesenseClient.shared.functionDetails(id: String(id)) else {
+        guard let fn = await TypesenseClient.shared.functionDetails(id: String(id)) else {
             return HTTPResponse(status: 404)
         }
         let data = try JSONEncoder().encode(fn)
@@ -19,7 +20,7 @@ public struct Handlers {
     }
 
     public func listFunctions(_ request: HTTPRequest) async throws -> HTTPResponse {
-        let fns = TypesenseClient.shared.listFunctions()
+        let fns = await TypesenseClient.shared.listFunctions()
         let data = try JSONEncoder().encode(fns)
         return HTTPResponse(body: data)
     }
