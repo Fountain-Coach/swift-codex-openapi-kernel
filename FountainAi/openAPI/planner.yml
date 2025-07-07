@@ -1,0 +1,320 @@
+---
+openapi: 3.1.0
+info:
+  title: FountainAI Planner Service
+  description: >
+    Orchestrates LLM-driven planning workflows; all endpoints are
+    grouped by router tags.
+  version: 0.1.0
+servers:
+  - url: http://planner.fountain.coach/api/v1
+paths:
+  /planner/reason:
+    post:
+      tags:
+        - Planner
+      summary: Generate a plan from user objective
+      description: >
+        Accepts a high-level user objective and returns a step-by-step plan.
+      operationId: planner_reason
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserObjectiveRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /planner/execute:
+    post:
+      tags:
+        - Planner
+      summary: Execute a generated plan
+      description: >
+        Takes a plan (function-call list) and runs each step,
+        returning results.
+      operationId: planner_execute
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlanExecutionRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExecutionResult'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /planner/corpora:
+    get:
+      tags:
+        - Planner
+      summary: List available corpora
+      description: >
+        Returns the names/IDs of all corpora that the planner knows about.
+      operationId: planner_list_corpora
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                title: Response Planner List Corpora
+                items:
+                  type: string
+  /planner/reflections/{corpus_id}:
+    get:
+      tags:
+        - Reflections
+      summary: Fetch reflection history
+      description: Retrieve all stored reflections for a given corpus ID.
+      operationId: get_reflection_history
+      parameters:
+        - name: corpus_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoryListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /planner/reflections/{corpus_id}/semantic-arc:
+    get:
+      tags:
+        - Reflections
+      summary: Fetch semantic arc
+      description: >
+        Retrieve the semantic arc for a given corpus ID (curated summary,
+        insights, etc.).
+      operationId: get_semantic_arc
+      parameters:
+        - name: corpus_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Get Semantic Arc
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /planner/reflections/:
+    post:
+      tags:
+        - Reflections
+      summary: Add a new reflection
+      description: Send a message to be reflected on and appended to the corpus.
+      operationId: post_reflection
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatReflectionRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReflectionItem'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ChatReflectionRequest:
+      title: ChatReflectionRequest
+      type: object
+      required:
+        - corpus_id
+        - message
+      properties:
+        corpus_id:
+          type: string
+          title: Corpus Id
+        message:
+          type: string
+          title: Message
+    ExecutionResult:
+      title: ExecutionResult
+      description: The wrapper returned by /planner/execute.
+      type: object
+      required:
+        - results
+      properties:
+        results:
+          type: array
+          title: Results
+          items:
+            $ref: '#/components/schemas/FunctionCallResult'
+    FunctionCall:
+      title: FunctionCall
+      type: object
+      required:
+        - name
+        - arguments
+      properties:
+        name:
+          type: string
+          title: Name
+        arguments:
+          type: object
+          title: Arguments
+          additionalProperties: true
+    FunctionCallResult:
+      title: FunctionCallResult
+      description: The response from executing a single FunctionCall.
+      type: object
+      required:
+        - step
+        - arguments
+        - output
+      properties:
+        step:
+          type: string
+          title: Step
+        arguments:
+          type: object
+          title: Arguments
+          additionalProperties: true
+        output:
+          title: Output
+    HTTPValidationError:
+      title: HTTPValidationError
+      type: object
+      properties:
+        detail:
+          type: array
+          title: Detail
+          items:
+            $ref: '#/components/schemas/ValidationError'
+    HistoryListResponse:
+      title: HistoryListResponse
+      type: object
+      required:
+        - reflections
+      properties:
+        reflections:
+          type: array
+          title: Reflections
+          items:
+            $ref: '#/components/schemas/ReflectionItem'
+    PlanExecutionRequest:
+      title: PlanExecutionRequest
+      description: >
+        Mirrors PlanResponse but used as the input to /planner/execute.
+      type: object
+      required:
+        - objective
+        - steps
+      properties:
+        objective:
+          type: string
+          title: Objective
+        steps:
+          type: array
+          title: Steps
+          items:
+            $ref: '#/components/schemas/FunctionCall'
+    PlanResponse:
+      title: PlanResponse
+      type: object
+      required:
+        - objective
+        - steps
+      properties:
+        objective:
+          type: string
+          title: Objective
+        steps:
+          type: array
+          title: Steps
+          items:
+            $ref: '#/components/schemas/FunctionCall'
+    ReflectionItem:
+      title: ReflectionItem
+      type: object
+      required:
+        - timestamp
+        - content
+      properties:
+        timestamp:
+          type: string
+          title: Timestamp
+        content:
+          type: string
+          title: Content
+    UserObjectiveRequest:
+      title: UserObjectiveRequest
+      type: object
+      required:
+        - objective
+      properties:
+        objective:
+          type: string
+          title: Objective
+    ValidationError:
+      title: ValidationError
+      type: object
+      required:
+        - loc
+        - msg
+        - type
+      properties:
+        loc:
+          type: array
+          title: Location
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type

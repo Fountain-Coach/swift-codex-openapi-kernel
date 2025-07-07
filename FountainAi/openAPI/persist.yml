@@ -1,0 +1,394 @@
+---
+openapi: 3.1.0
+info:
+  title: FountainAI Persistence Service (Typesense-backed)
+  description: >
+    Persistence and semantic indexing API for FountainAI corpora and related
+    semantic artifacts (baselines, drifts, reflections, functions, history).
+  version: 1.0.0
+servers:
+  - url: http://persist.fountain.coach/api/v1
+paths:
+
+  /corpora:
+    get:
+      summary: List all corpora with pagination support
+      description: |
+        Retrieve a paginated list of all corpus identifiers
+        available in the persistence layer.
+        Useful for clients to discover existing corpora.
+      operationId: listCorpora
+      parameters:
+        - name: limit
+          in: query
+          description: Maximum number of corpora to return in this response.
+          schema:
+            type: integer
+            default: 50
+            minimum: 1
+            maximum: 200
+        - name: offset
+          in: query
+          description: >
+            Number of corpora to skip before starting to collect the
+            result set.
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+      responses:
+        '200':
+          description: A paginated list of corpus IDs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    description: Total number of corpora stored.
+                  corpora:
+                    type: array
+                    description: Array of corpus unique identifiers.
+                    items:
+                      type: string
+
+    post:
+      summary: Create a new corpus
+      description: |
+        Initialize a new corpus that will act as a semantic container for
+        baselines, reflections, and other artifacts. Corpus IDs must be unique.
+      operationId: createCorpus
+      requestBody:
+        description: Corpus creation request payload including unique corpusId.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CorpusCreateRequest'
+      responses:
+        '201':
+          description: Corpus created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CorpusResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+
+  /corpora/{corpusId}/baselines:
+    post:
+      summary: Add a baseline snapshot to a corpus
+      description: |
+        Store a baseline snapshot within the specified corpus. Baselines
+        capture semantic state or data snapshots relevant for drift
+        analysis or reflection.
+      operationId: addBaseline
+      parameters:
+        - name: corpusId
+          in: path
+          required: true
+          description: >
+            The unique identifier of the corpus to store the baseline in.
+          schema:
+            type: string
+      requestBody:
+        description: >
+          Baseline data including unique baselineId and textual content.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Baseline'
+      responses:
+        '200':
+          description: Baseline added successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+
+  /corpora/{corpusId}/functions:
+    post:
+      summary: Add a function to a corpus
+      operationId: addFunction
+      parameters:
+        - name: corpusId
+          in: path
+          required: true
+          description: Corpus identifier to associate the function with.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Function'
+      responses:
+        '200':
+          description: Function stored successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+
+  /corpora/{corpusId}/reflections:
+    post:
+      summary: Add a reflection to a corpus
+      description: |
+        Store a GPT-generated reflection related to the specified corpus.
+        Reflections often include question and answer content useful for
+        semantic reasoning and planning.
+      operationId: addReflection
+      parameters:
+        - name: corpusId
+          in: path
+          required: true
+          description: The corpus identifier to associate this reflection with.
+          schema:
+            type: string
+      requestBody:
+        description: >
+          Reflection content including reflectionId, question, and answer.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reflection'
+      responses:
+        '200':
+          description: Reflection added successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+
+    get:
+      summary: List reflections in a corpus, supports pagination
+      description: |
+        Retrieve reflections stored in the given corpus with pagination. Useful
+        for browsing semantic insights or planning data over time.
+      operationId: listReflections
+      parameters:
+        - name: corpusId
+          in: path
+          required: true
+          description: Corpus identifier to list reflections for.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Maximum number of reflections to return.
+          schema:
+            type: integer
+            default: 50
+            minimum: 1
+            maximum: 200
+        - name: offset
+          in: query
+          description: Number of reflections to skip before returning results.
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+      responses:
+        '200':
+          description: Paginated list of reflections for the corpus.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    description: Total number of reflections available.
+                  reflections:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Reflection'
+
+  /functions:
+    get:
+      summary: List all registered functions with pagination
+      description: |
+        Retrieve a paginated list of all registered callable functions known to
+        the persistence layer for orchestration and invocation.
+      operationId: listFunctions
+      parameters:
+        - name: limit
+          in: query
+          description: Maximum number of functions to return.
+          schema:
+            type: integer
+            default: 50
+            minimum: 1
+            maximum: 200
+        - name: offset
+          in: query
+          description: Number of functions to skip before returning results.
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+      responses:
+        '200':
+          description: Paginated list of functions.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    description: Total functions registered.
+                  functions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Function'
+
+  /functions/{functionId}:
+    get:
+      summary: Get function details by ID
+      description: >
+        Retrieve detailed metadata for a registered function by its
+        identifier.
+      operationId: getFunctionDetails
+      parameters:
+        - name: functionId
+          in: path
+          required: true
+          description: Unique identifier of the function.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Function metadata retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Function'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+
+components:
+  schemas:
+    BaseEntity:
+      type: object
+      required:
+        - corpusId
+      properties:
+        corpusId:
+          type: string
+          description: Unique corpus identifier to namespace stored data.
+
+    CorpusCreateRequest:
+      type: object
+      required:
+        - corpusId
+      properties:
+        corpusId:
+          type: string
+          description: Unique identifier for the new corpus to be created.
+
+    CorpusResponse:
+      type: object
+      properties:
+        corpusId:
+          type: string
+          description: Identifier of the created corpus.
+        message:
+          type: string
+          description: Human-readable status message.
+
+    Baseline:
+      allOf:
+        - $ref: '#/components/schemas/BaseEntity'
+        - type: object
+          required:
+            - baselineId
+            - content
+          properties:
+            baselineId:
+              type: string
+              description: Unique identifier for this baseline snapshot.
+            content:
+              type: string
+              description: Textual or JSON content of the baseline snapshot.
+
+    Reflection:
+      allOf:
+        - $ref: '#/components/schemas/BaseEntity'
+        - type: object
+          required:
+            - reflectionId
+            - question
+            - content
+          properties:
+            reflectionId:
+              type: string
+              description: Unique identifier for the reflection.
+            question:
+              type: string
+              description: Reflection question or prompt.
+            content:
+              type: string
+              description: Generated response or insight from GPT.
+
+    Function:
+      type: object
+      required:
+        - functionId
+        - name
+        - description
+        - httpMethod
+        - httpPath
+      properties:
+        functionId:
+          type: string
+          description: Unique identifier for the registered function.
+        name:
+          type: string
+          description: Human-readable function name.
+        description:
+          type: string
+          description: Description of the function’s purpose.
+        httpMethod:
+          type: string
+          enum: [GET, POST, PUT, PATCH, DELETE]
+          description: HTTP method to invoke the function.
+        httpPath:
+          type: string
+          description: HTTP path used to call the function.
+
+    SuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Success confirmation message.
+          example: Operation successful.
+
+  responses:
+    ErrorResponse:
+      description: Standard error response.
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: string
+                description: Error code identifier.
+              message:
+                type: string
+                description: Human-readable error message.

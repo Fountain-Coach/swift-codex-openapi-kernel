@@ -1,0 +1,148 @@
+---
+openapi: 3.1.0
+info:
+  title: FountainAI Tools Factory Service
+  description: |
+    Service that registers new tools (function definitions) and stores
+    them in the shared Typesense collection used by the Function Caller
+    Service.
+  version: 1.0.0
+servers:
+  - url: http://tools-factory.fountain.coach/api/v1
+paths:
+  /tools:
+    get:
+      summary: List Registered Tools
+      operationId: list_tools
+      description: Retrieve a paginated list of registered tools.
+      parameters:
+        - name: page
+          in: query
+          description: Page number for pagination
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: page_size
+          in: query
+          description: Number of tools per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FunctionListResponse'
+        '422':
+          $ref: '#/components/responses/ValidationErrorResponse'
+
+  /tools/register:
+    post:
+      summary: Register Tools from OpenAPI
+      operationId: register_openapi
+      description: |
+        Store a collection of tool definitions provided via an OpenAPI
+        document. Each operationId is mapped to a callable function.
+      parameters:
+        - name: corpusId
+          in: query
+          description: Corpus identifier to associate the tools with
+          schema:
+            type: string
+            default: default
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpenAPIDocument'
+      responses:
+        '200':
+          description: Tools registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FunctionListResponse'
+        '422':
+          $ref: '#/components/responses/ValidationErrorResponse'
+
+components:
+  schemas:
+    FunctionInfo:
+      type: object
+      required:
+        - function_id
+        - name
+        - description
+        - http_method
+        - http_path
+      properties:
+        function_id:
+          type: string
+          description: Unique function identifier (matches operationId)
+        name:
+          type: string
+          description: Human-readable name of the function
+        description:
+          type: string
+          description: Description of the function's purpose
+        http_method:
+          type: string
+          enum: [GET, POST, PUT, PATCH, DELETE]
+          description: HTTP method used to invoke the function
+        http_path:
+          type: string
+          description: HTTP path to call for the function
+        parameters_schema:
+          type: object
+          description: JSON Schema describing input parameters for validation
+        openapi:
+          type: object
+          description: Full OpenAPI document defining the tool
+    FunctionListResponse:
+      type: object
+      properties:
+        functions:
+          type: array
+          items:
+            $ref: '#/components/schemas/FunctionInfo'
+        page:
+          type: integer
+        page_size:
+          type: integer
+        total:
+          type: integer
+    OpenAPIDocument:
+      description: OpenAPI specification describing one or more tools
+      type: object
+      additionalProperties: true
+    ErrorResponse:
+      type: object
+      required:
+        - error_code
+        - message
+      properties:
+        error_code:
+          type: string
+          description: Machine-readable error code
+        message:
+          type: string
+          description: Human-readable error message
+
+  responses:
+    ValidationErrorResponse:
+      description: Validation error in input parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            validation_error:
+              value:
+                error_code: validation_error
+                message: Invalid input parameters

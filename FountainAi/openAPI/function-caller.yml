@@ -1,0 +1,198 @@
+---
+openapi: 3.1.0
+info:
+  title: FountainAI Function Caller Service
+  description: |
+    Service to register, manage, and invoke function calls mapped
+    from OpenAI function-calling plans.
+    It acts as a dynamic operationId-to-HTTP call mapping factory,
+    enabling LLM-driven orchestration.
+  version: 1.0.0
+servers:
+  - url: http://functions.fountain.coach/api/v1
+paths:
+  /functions:
+    get:
+      summary: List Registered Functions
+      operationId: list_functions
+      description: >
+        Retrieve a paginated list of all registered functions available for
+        invocation.
+      parameters:
+        - name: page
+          in: query
+          description: Page number for pagination
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: page_size
+          in: query
+          description: Number of functions per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        '200':
+          description: Successful Response with function list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  functions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FunctionInfo'
+                  page:
+                    type: integer
+                  page_size:
+                    type: integer
+                  total:
+                    type: integer
+        '422':
+          $ref: '#/components/responses/ValidationErrorResponse'
+
+  /functions/{function_id}:
+    get:
+      summary: Get Function Details
+      operationId: get_function_details
+      description: >
+        Retrieve detailed metadata about a registered function by its ID.
+      parameters:
+        - name: function_id
+          in: path
+          required: true
+          description: Unique identifier of the function
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Function metadata retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FunctionInfo'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '422':
+          $ref: '#/components/responses/ValidationErrorResponse'
+
+  /functions/{function_id}/invoke:
+    post:
+      summary: Invoke a Registered Function
+      operationId: invoke_function
+      description: |
+        Invoke the specified function with the given input parameters.
+        The service will perform the corresponding HTTP call and
+        return the function result.
+      parameters:
+        - name: function_id
+          in: path
+          required: true
+          description: Unique identifier of the function to invoke
+          schema:
+            type: string
+      requestBody:
+        required: true
+        description: >
+          JSON object containing the input parameters for the
+          function call
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Function invoked successfully, result returned
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Invalid input parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '422':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '500':
+          description: Internal server error during invocation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    FunctionInfo:
+      type: object
+      required:
+        - function_id
+        - name
+        - description
+        - http_method
+        - http_path
+      properties:
+        function_id:
+          type: string
+          description: Unique function identifier (matches operationId)
+        name:
+          type: string
+          description: Human-readable name of the function
+        description:
+          type: string
+          description: Description of the function's purpose
+        http_method:
+          type: string
+          enum: [GET, POST, PUT, PATCH, DELETE]
+          description: HTTP method used to invoke the function
+        http_path:
+          type: string
+          description: HTTP path to call for the function
+        parameters_schema:
+          type: object
+          description: JSON Schema describing input parameters for validation
+
+    ErrorResponse:
+      type: object
+      required:
+        - error_code
+        - message
+      properties:
+        error_code:
+          type: string
+          description: Machine-readable error code
+        message:
+          type: string
+          description: Human-readable error message
+
+  responses:
+    NotFoundResponse:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            not_found:
+              value:
+                error_code: not_found
+                message: The requested resource was not found
+
+    ValidationErrorResponse:
+      description: Validation error in input parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            validation_error:
+              value:
+                error_code: validation_error
+                message: Invalid input parameters
