@@ -36,7 +36,8 @@ final class ServicesIntegrationTests: XCTestCase {
 
         let client = BaselineAwarenessClient.APIClient(baseURL: URL(string: "http://127.0.0.1:\(port)")!)
         let data = try await client.sendRaw(BaselineAwarenessClient.health_health_get())
-        XCTAssertEqual(data.count, 0)
+        let status = try JSONDecoder().decode([String: String].self, from: data)
+        XCTAssertEqual(status["status"], "ok")
     }
 
     func testBootstrapSeedRoles() async throws {
