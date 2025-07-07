@@ -26,4 +26,25 @@ final class ServerTests: XCTestCase {
         XCTAssertTrue(FileManager.default.fileExists(atPath: outDir.appendingPathComponent("Router.swift").path))
         XCTAssertTrue(FileManager.default.fileExists(atPath: outDir.appendingPathComponent("HTTPKernel.swift").path))
     }
+
+    func testRouterRoutesRequest() async throws {
+        let router = Router()
+        let request = HTTPRequest(method: "GET", path: "/todos")
+        let response = try await router.route(request)
+        XCTAssertEqual(response.status, 200)
+    }
+
+    func testRouterUnknownRouteReturns404() async throws {
+        let router = Router()
+        let request = HTTPRequest(method: "GET", path: "/missing")
+        let response = try await router.route(request)
+        XCTAssertEqual(response.status, 404)
+    }
+
+    func testKernelDelegatesToRouter() async throws {
+        let kernel = HTTPKernel()
+        let request = HTTPRequest(method: "GET", path: "/todos")
+        let response = try await kernel.handle(request)
+        XCTAssertEqual(response.status, 200)
+    }
 }
