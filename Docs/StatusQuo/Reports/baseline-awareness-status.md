@@ -8,11 +8,11 @@ Spec path: `FountainAi/openAPI/v1/baseline-awareness.yml` (version 1.0.0).
 - OpenAPI operations defined: **11** covering corpus initialization, baseline and drift ingestion, pattern storage, reflection management and analytics queries
 - Generated client SDK at `Generated/Client/baseline-awareness` now encodes request bodies and decodes typed responses
 - Generated server kernel at `Generated/Server/baseline-awareness` now includes `main.swift` with a simple socket runtime that parses headers and bodies
-- Router decodes JSON bodies into models and forwards them to typed handler methods
-- `GET /health` returns a structured JSON status while other handlers remain stubs
+- Router decodes JSON bodies into models and forwards them to ``BaselineStore`` backed by the in-memory ``TypesenseClient``
+- All operations are implemented and `/health` returns a structured JSON status
 - A `Dockerfile` builds the service binary, and build/run instructions appear in the repository README
-- New integration tests now cover corpus initialization and baseline ingestion in addition to the `/health` endpoint
-- The `BaselineStore` now persists via `TypesenseClient`, sharing the persistence service infrastructure
+- Integration tests verify `/health`, corpus initialization and baseline ingestion
+- The `BaselineStore` persists via `TypesenseClient`, sharing the persistence service infrastructure
 - Expanded documentation describes building and running the service container and verifying `/health`
 - CI workflow runs integration tests on both Linux and macOS using `AsyncHTTPClient` and the NIO server
 

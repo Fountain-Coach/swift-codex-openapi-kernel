@@ -8,12 +8,11 @@ Spec path: `FountainAi/openAPI/v1/function-caller.yml` (version 1.0.0).
 - OpenAPI operations defined: 3
 - Generated client SDK at `Generated/Client/function-caller`
 - Generated server kernel at `Generated/Server/function-caller`
-- Handler stubs perform no invocation logic
-- Client uses untyped `Data` decoding
-- No dedicated tests for this service
+- Handlers dispatch registered functions via ``FunctionDispatcher`` using ``TypesenseClient``
+- Client decodes typed models for all endpoints
+- Integration tests verify the `list_functions` endpoint
 
 ## Next Steps toward Production
-- Implement dynamic function dispatch sourced from the Tools Factory
-- Generate typed models for request bodies and responses
-- Expand integration tests to cover registered tool execution
-- Add authentication and error handling
+- Integrate with the Tools Factory for dynamic function registration
+- Expand integration tests to cover function invocation flows
+- Add authentication and robust error handling

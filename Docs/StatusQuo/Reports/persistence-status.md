@@ -8,12 +8,11 @@ Spec path: `FountainAi/openAPI/v1/persist.yml` (version 1.0.0).
 - OpenAPI operations defined: 8
 - Generated client SDK at `Generated/Client/persist`
 - Generated server kernel at `Generated/Server/persist`
-- Server does not yet integrate with Typesense
-- All responses are decoded as `Data` in the client
-- No persistence-specific tests exist
+- Server uses an in-memory ``TypesenseClient`` for persistence during tests
+- Client decodes typed models for all endpoints
+- Integration tests verify corpus listing and basic storage
 
 ## Next Steps toward Production
 - Implement database adapters and connection configuration
-- Emit typed models for persistence requests and responses
 - Add integration tests verifying CRUD operations
 - Provide containerization instructions for deploying with Typesense
