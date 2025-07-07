@@ -111,6 +111,23 @@ every push and pull request using Swift 6.
 
 ---
 
+## 🐳 Service Containers
+
+Each generated server directory contains a `Dockerfile` that compiles the stub
+server into a minimal container. To build and run the `baseline-awareness`
+service:
+
+```bash
+cd Generated/Server/baseline-awareness
+docker build -t baseline-awareness .
+docker run --rm baseline-awareness
+```
+
+The container simply starts the Swift binary and prints a message. Networking is
+not yet implemented.
+
+---
+
 ## 📜 License
 
 MIT License  
