@@ -1,5 +1,7 @@
 import Foundation
 
+public struct NoBody: Codable {}
+
 public struct HTTPRequest {
     public let method: String
     public let path: String

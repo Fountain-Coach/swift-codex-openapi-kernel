@@ -41,3 +41,17 @@ public struct ReflectionSummaryResponse: Codable {
     public let message: String
 }
 
+public typealias readSemanticArcResponse = String
+
+public typealias addReflectionResponse = String
+
+public typealias addDriftResponse = String
+
+public typealias listHistoryAnalyticsResponse = String
+
+public typealias addPatternsResponse = String
+
+public typealias health_health_getResponse = String
+
+public typealias addBaselineResponse = String
+
