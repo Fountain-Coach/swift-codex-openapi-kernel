@@ -1,0 +1,16 @@
+version: '3.9'
+services:
+  baseline-awareness:
+    build: ./Generated/Server/baseline-awareness
+  bootstrap:
+    build: ./Generated/Server/bootstrap
+  function-caller:
+    build: ./Generated/Server/function-caller
+  llm-gateway:
+    build: ./Generated/Server/llm-gateway
+  planner:
+    build: ./Generated/Server/planner
+  persist:
+    build: ./Generated/Server/persist
+  tools-factory:
+    build: ./Generated/Server/tools-factory
