@@ -30,6 +30,7 @@ final class GeneratorTests: XCTestCase {
         try assertFile("Client/Requests/GetTodos.swift")
         try assertFile("Server/HTTPRequest.swift")
         try assertFile("Server/HTTPResponse.swift")
+        try assertFile("Server/HTTPServer.swift")
         try assertFile("Server/Handlers.swift")
         try assertFile("Server/Router.swift")
         try assertFile("Server/HTTPKernel.swift")
