@@ -18,10 +18,10 @@ public struct OpenAPISpec: Codable {
 
     public struct Schema: Codable {
         public struct Property: Codable {
-            public var type: String
+            public var type: String?
         }
 
-        public var type: String
+        public var type: String?
         public var properties: [String: Property]?
     }
 
@@ -32,6 +32,7 @@ public struct OpenAPISpec: Codable {
 
 extension OpenAPISpec.Schema.Property {
     public var swiftType: String {
+        guard let type else { return "String" }
         switch type {
         case "string": return "String"
         case "integer": return "Int"
