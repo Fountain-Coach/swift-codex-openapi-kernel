@@ -126,6 +126,14 @@ docker run --rm baseline-awareness
 The container simply starts the Swift binary and prints a message. Networking is
 not yet implemented.
 
+### Docker Compose
+To build and run all services together:
+```bash
+docker-compose build
+docker-compose up
+```
+
+
 ---
 
 ## 📜 License
