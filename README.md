@@ -48,7 +48,9 @@ swift-codex-openapi-kernel/
 ├── Tests/
 │   ├── GeneratorTests/
 │   └── ServerTests/
-├── codex-plan.md
+├── Docs/
+│   ├── Historical/               ← Past plans and design documents
+│   └── StatusQuo/                ← Current status reports
 ├── README.md
 └── .codex
 ```
