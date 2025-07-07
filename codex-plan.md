@@ -30,9 +30,9 @@ This plan defines how Codex should build a Swift 6-native OpenAPI code generator
 
 ## 🧬 Phase 3 · Model Emitter
 
-- [ ] Generate `Codable` models from `components.schemas`.
-- [ ] Emit `Models.swift` into both `Client/` and `Server/`.
-- [ ] Add golden file tests.
+- [x] Generate `Codable` models from `components.schemas`.
+- [x] Emit `Models.swift` into both `Client/` and `Server/`.
+- [x] Add golden file tests.
 
 ---
 

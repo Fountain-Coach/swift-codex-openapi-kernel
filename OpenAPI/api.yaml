@@ -1,3 +1,14 @@
 {
-  "title": "Sample API"
+  "title": "Sample API",
+  "components": {
+    "schemas": {
+      "Todo": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" }
+        }
+      }
+    }
+  }
 }
