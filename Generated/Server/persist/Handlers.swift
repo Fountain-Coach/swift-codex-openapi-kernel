@@ -1,7 +1,14 @@
 import Foundation
 
+/// Persistence handlers wired to an in-memory Typesense client. This mimics the
+/// real Typesense-backed service without requiring the dependency during tests.
+
 public struct Handlers {
-    public init() {}
+    let typesense: TypesenseClient
+
+    public init(typesense: TypesenseClient = .shared) {
+        self.typesense = typesense
+    }
     public func addbaseline(_ request: HTTPRequest) async throws -> HTTPResponse {
         return HTTPResponse()
     }
@@ -12,18 +19,44 @@ public struct Handlers {
         return HTTPResponse()
     }
     public func listcorpora(_ request: HTTPRequest) async throws -> HTTPResponse {
-        return HTTPResponse()
+        let ids = typesense.listCorpora()
+        let data = try JSONEncoder().encode(ids)
+        return HTTPResponse(body: data)
     }
+
     public func createcorpus(_ request: HTTPRequest) async throws -> HTTPResponse {
-        return HTTPResponse()
+        guard let model = try? JSONDecoder().decode(CorpusCreateRequest.self, from: request.body) else {
+            return HTTPResponse(status: 400)
+        }
+        let resp = typesense.createCorpus(id: model.corpusId)
+        let data = try JSONEncoder().encode(resp)
+        return HTTPResponse(body: data)
     }
+
     public func listfunctions(_ request: HTTPRequest) async throws -> HTTPResponse {
-        return HTTPResponse()
+        let items = typesense.listFunctions()
+        let data = try JSONEncoder().encode(items)
+        return HTTPResponse(body: data)
     }
+
     public func addfunction(_ request: HTTPRequest) async throws -> HTTPResponse {
-        return HTTPResponse()
+        guard let function = try? JSONDecoder().decode(Function.self, from: request.body) else {
+            return HTTPResponse(status: 400)
+        }
+        typesense.addFunction(function)
+        let resp = SuccessResponse(message: "stored")
+        let data = try JSONEncoder().encode(resp)
+        return HTTPResponse(body: data)
     }
+
     public func getfunctiondetails(_ request: HTTPRequest) async throws -> HTTPResponse {
-        return HTTPResponse()
+        guard let id = request.path.split(separator: "/").last else {
+            return HTTPResponse(status: 404)
+        }
+        guard let fn = typesense.functionDetails(id: String(id)) else {
+            return HTTPResponse(status: 404)
+        }
+        let data = try JSONEncoder().encode(fn)
+        return HTTPResponse(body: data)
     }
 }
