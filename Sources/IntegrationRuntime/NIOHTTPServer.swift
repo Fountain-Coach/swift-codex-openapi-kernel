@@ -1,5 +1,6 @@
-import NIO
-import NIOHTTP1
+@preconcurrency import NIO
+@preconcurrency import NIOHTTP1
+import Foundation
 
 public final class NIOHTTPServer {
     let kernel: HTTPKernel
@@ -65,7 +66,7 @@ public final class NIOHTTPServer {
                     responseHead.headers = headers
                     context.write(self.wrapOutboundOut(.head(responseHead)), promise: nil)
                     var buffer = context.channel.allocator.buffer(bytes: resp.body)
-                    context.write(self.wrapOutboundOut(.body(.byteBuffer(&buffer))), promise: nil)
+                    context.write(self.wrapOutboundOut(.body(.byteBuffer(buffer))), promise: nil)
                     context.writeAndFlush(self.wrapOutboundOut(.end(nil)), promise: nil)
                 }
                 self.head = nil
@@ -74,3 +75,5 @@ public final class NIOHTTPServer {
         }
     }
 }
+
+extension NIOHTTPServer.HTTPHandler: @unchecked Sendable {}
