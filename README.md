@@ -56,7 +56,7 @@ swift-codex-openapi-kernel/
 
 ```bash
 swift build -c release
-swift run generator --input OpenAPI/api.yaml --output Generated/
+./regenerate.sh
 swift test
 ```
 
