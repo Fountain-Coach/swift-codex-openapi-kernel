@@ -56,7 +56,7 @@ This plan defines how Codex should build a Swift 6-native OpenAPI code generator
 
 ## 🧪 Phase 6 · Testing & Validation
 
-- [ ] Add `XCTestCase` tests for model parsing.
+ - [x] Add `XCTestCase` tests for model parsing.
 - [ ] Test the CLI with fixtures.
 - [ ] Simulate HTTP requests directly to router/kernel in unit tests.
 
