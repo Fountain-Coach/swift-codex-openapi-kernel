@@ -40,6 +40,25 @@ final class ServicesIntegrationTests: XCTestCase {
         XCTAssertEqual(status["status"], "ok")
     }
 
+    func testBaselineInitializeAndAdd() async throws {
+        let serviceKernel = BaselineAwarenessService.HTTPKernel()
+        let kernel = IntegrationRuntime.HTTPKernel { req in
+            let sreq = BaselineAwarenessService.HTTPRequest(method: req.method, path: req.path, headers: req.headers, body: req.body)
+            let sresp = try await serviceKernel.handle(sreq)
+            return IntegrationRuntime.HTTPResponse(status: sresp.status, body: sresp.body)
+        }
+        let (server, port) = try await startServer(with: kernel)
+        defer { try? await server.stop() }
+
+        let client = BaselineAwarenessClient.APIClient(baseURL: URL(string: "http://127.0.0.1:\(port)")!)
+        let initBody = BaselineAwarenessClient.InitIn(corpusId: "c1")
+        let initResp = try await client.send(BaselineAwarenessClient.initializeCorpus(body: initBody))
+        XCTAssertEqual(initResp.message, "created")
+
+        let baselineBody = BaselineAwarenessClient.BaselineRequest(baselineId: "b1", content: "text", corpusId: "c1")
+        _ = try await client.send(BaselineAwarenessClient.addBaseline(body: baselineBody))
+    }
+
     func testBootstrapSeedRoles() async throws {
         let serviceKernel = BootstrapService.HTTPKernel()
         let kernel = IntegrationRuntime.HTTPKernel { req in

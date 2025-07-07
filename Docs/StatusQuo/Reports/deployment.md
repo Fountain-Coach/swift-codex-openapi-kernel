@@ -24,6 +24,15 @@ docker-compose up
 
 The services currently print a startup message. Networking and persistent storage are not yet implemented.
 
+### Running a Single Service
+
+To build and run only the Baseline Awareness service:
+
+```bash
+docker build -f Generated/Server/baseline-awareness/Dockerfile -t baseline-awareness .
+docker run -p 8080:8080 baseline-awareness
+```
+
 ## Stopping and Removing Containers
 
 Press `Ctrl+C` to stop the running services, then remove containers with:
