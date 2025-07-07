@@ -1,0 +1,24 @@
+import XCTest
+@testable import Parser
+
+final class ParserTests: XCTestCase {
+    func testSpecLoaderParsesTitle() throws {
+        let json = "{\"title\": \"My API\"}"
+        let tmpDir = FileManager.default.temporaryDirectory
+        let fileURL = tmpDir.appendingPathComponent("spec.json")
+        try json.write(to: fileURL, atomically: true, encoding: .utf8)
+
+        let spec = try SpecLoader.load(from: fileURL)
+        XCTAssertEqual(spec.title, "My API")
+    }
+
+    func testSpecValidationRejectsEmptyTitle() throws {
+        let spec = OpenAPISpec(title: "")
+        XCTAssertThrowsError(try SpecValidator.validate(spec)) { error in
+            guard let validationError = error as? SpecValidator.ValidationError else {
+                return XCTFail("Unexpected error type")
+            }
+            XCTAssertEqual(validationError, SpecValidator.ValidationError("title cannot be empty"))
+        }
+    }
+}

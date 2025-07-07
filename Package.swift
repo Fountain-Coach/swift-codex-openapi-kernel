@@ -11,14 +11,15 @@ let package = Package(
     ],
     targets: [
         .target(name: "Parser"),
-        .target(name: "ModelEmitter"),
-        .target(name: "ClientGenerator"),
-        .target(name: "ServerGenerator"),
+        .target(name: "ModelEmitter", dependencies: ["Parser"]),
+        .target(name: "ClientGenerator", dependencies: ["Parser"]),
+        .target(name: "ServerGenerator", dependencies: ["Parser"]),
         .executableTarget(
             name: "Generator",
             dependencies: ["Parser", "ModelEmitter", "ClientGenerator", "ServerGenerator"]
         ),
         .testTarget(name: "GeneratorTests", dependencies: ["Generator"]),
-        .testTarget(name: "ServerTests", dependencies: ["ServerGenerator"])
+        .testTarget(name: "ServerTests", dependencies: ["ServerGenerator"]),
+        .testTarget(name: "ParserTests", dependencies: ["Parser"])
     ]
 )
