@@ -22,9 +22,9 @@ This plan defines how Codex should build a Swift 6-native OpenAPI code generator
 
 ## 📜 Phase 2 · OpenAPI 3.1 Parser
 
-- [ ] Create `OpenAPISpec.swift` (spec structs).
-- [ ] Implement `SpecLoader.swift` (loads YAML or JSON).
-- [ ] Add tests for spec parsing and validation.
+- [x] Create `OpenAPISpec.swift` (spec structs).
+- [x] Implement `SpecLoader.swift` (loads YAML or JSON).
+- [x] Add tests for spec parsing and validation.
 
 ---
 
