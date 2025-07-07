@@ -10,10 +10,10 @@ final class IntegrationTests: XCTestCase {
         }
         let server = NIOHTTPServer(kernel: kernel)
         let port = try await server.start(port: 0)
-        defer { try? await server.stop() }
+        addTeardownBlock { try? await server.stop() }
 
         let client = AsyncHTTPClientDriver()
-        defer { try? await client.shutdown() }
+        addTeardownBlock { try? await client.shutdown() }
 
         let (buffer, _) = try await client.execute(method: .GET, url: "http://127.0.0.1:\(port)/todos", headers: HTTPHeaders(), body: nil)
         XCTAssertEqual(buffer.readableBytes, 0)

@@ -1,4 +1,5 @@
 import Foundation
+import IntegrationRuntime
 
 public struct Handlers {
     public init() {}

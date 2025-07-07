@@ -9,5 +9,5 @@
     "tests": "Tests"
   },
   "cli": "swift run generator --input OpenAPI/api.yaml --output Generated/",
-  "test": "swift test -v"
+  "test": "./run-tests.sh"
 }

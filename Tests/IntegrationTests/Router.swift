@@ -1,4 +1,5 @@
 import Foundation
+import IntegrationRuntime
 
 public struct Router {
     public var handlers: Handlers
