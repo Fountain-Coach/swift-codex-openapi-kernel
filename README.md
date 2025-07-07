@@ -132,6 +132,9 @@ To build and run all services together:
 docker-compose build
 docker-compose up
 ```
+## 🗓 Versioning & Changelog
+The service specifications follow Semantic Versioning. Major API revisions live in directories like `FountainAi/openAPI/v1`. All changes are recorded in [CHANGELOG.md](CHANGELOG.md); see [VERSIONING.md](VERSIONING.md) for policy details.
+
 
 
 ---
