@@ -109,21 +109,72 @@ public enum ClientGenerator {
     private static func emitRequest(operation op: OpenAPISpec.Operation, method: String, path: String, in dir: URL) throws {
         let bodyType = bodyType(for: op)
         let responseType = responseType(for: op)
-        let output = """
-        import Foundation
+        var output = "import Foundation\n\n"
 
-        public struct \(op.operationId): APIRequest {
-            public typealias Body = \(bodyType)
-            public typealias Response = \(responseType)
-            public var method: String { \"\(method)\" }
-            public var path: String { \"\(path)\" }
-            public var body: Body?
-
-            public init(body: Body? = nil) {
-                self.body = body
+        if let params = op.parameters, !params.isEmpty {
+            output += "public struct \(op.operationId)Parameters: Codable {\n"
+            for param in params {
+                let name = param.swiftName.camelCased
+                let type = param.swiftType
+                if param.required == true {
+                    output += "    public let \(name): \(type)\n"
+                } else {
+                    output += "    public var \(name): \(type)?\n"
+                }
             }
+            output += "}\n\n"
         }
-        """
-        try (output + "\n").write(to: dir.appendingPathComponent("\(op.operationId).swift"), atomically: true, encoding: .utf8)
+
+        output += "public struct \(op.operationId): APIRequest {\n"
+        output += "    public typealias Body = \(bodyType)\n"
+        output += "    public typealias Response = \(responseType)\n"
+        output += "    public var method: String { \"\(method)\" }\n"
+        if let params = op.parameters, !params.isEmpty {
+            output += "    public var parameters: \(op.operationId)Parameters\n"
+            output += "    public var path: String {\n"
+            output += "        var path = \"\(path)\"\n"
+            output += "        var query: [String] = []\n"
+            for param in params {
+                let name = param.swiftName.camelCased
+                if param.location == "path" {
+                    output += "        path = path.replacingOccurrences(of: \"{\(param.name)}\", with: String(parameters.\(name)))\n"
+                } else if param.location == "query" {
+                    if param.required == true {
+                        output += "        query.append(\"\(param.name)=\\(parameters.\(name))\")\n"
+                    } else {
+                        output += "        if let value = parameters.\(name) { query.append(\"\(param.name)=\\(value)\") }\n"
+                    }
+                }
+            }
+            output += "        if !query.isEmpty { path += \"?\" + query.joined(separator: \"&\") }\n"
+            output += "        return path\n"
+            output += "    }\n"
+        } else {
+            output += "    public var path: String { \"\(path)\" }\n"
+        }
+        output += "    public var body: Body?\n\n"
+        if let params = op.parameters, !params.isEmpty {
+            output += "    public init(parameters: \(op.operationId)Parameters, body: Body? = nil) {\n"
+            output += "        self.parameters = parameters\n"
+            output += "        self.body = body\n"
+            output += "    }\n"
+        } else {
+            output += "    public init(body: Body? = nil) {\n"
+            output += "        self.body = body\n"
+            output += "    }\n"
+        }
+        output += "}\n"
+
+        try output.write(to: dir.appendingPathComponent("\(op.operationId).swift"), atomically: true, encoding: .utf8)
+    }
+}
+
+private extension String {
+    var camelCased: String {
+        guard !isEmpty else { return self }
+        let parts = split(separator: "_")
+        guard let first = parts.first else { return self }
+        let rest = parts.dropFirst().map { $0.capitalized }
+        return ([first.lowercased()] + rest).joined()
     }
 }

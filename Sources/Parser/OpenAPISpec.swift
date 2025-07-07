@@ -130,3 +130,15 @@ extension OpenAPISpec.Schema {
         }
     }
 }
+
+extension OpenAPISpec.Parameter {
+    /// Swift identifier-safe name for the parameter.
+    public var swiftName: String {
+        name.replacingOccurrences(of: "-", with: "_")
+    }
+
+    /// Swift type inferred from the associated schema, defaulting to `String`.
+    public var swiftType: String {
+        schema?.swiftType ?? "String"
+    }
+}
