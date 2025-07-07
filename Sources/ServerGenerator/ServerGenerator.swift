@@ -18,7 +18,7 @@ public enum ServerGenerator {
             public let path: String
         }
         """
-        try output.write(to: url.appendingPathComponent("HTTPRequest.swift"), atomically: true, encoding: .utf8)
+        try (output + "\n").write(to: url.appendingPathComponent("HTTPRequest.swift"), atomically: true, encoding: .utf8)
     }
 
     private static func emitHTTPResponse(to url: URL) throws {
@@ -35,7 +35,7 @@ public enum ServerGenerator {
             }
         }
         """
-        try output.write(to: url.appendingPathComponent("HTTPResponse.swift"), atomically: true, encoding: .utf8)
+        try (output + "\n").write(to: url.appendingPathComponent("HTTPResponse.swift"), atomically: true, encoding: .utf8)
     }
 
     private static func emitHandlers(from spec: OpenAPISpec, to url: URL) throws {
@@ -98,7 +98,7 @@ public enum ServerGenerator {
             }
         }
         """
-        try output.write(to: url.appendingPathComponent("HTTPKernel.swift"), atomically: true, encoding: .utf8)
+        try (output + "\n").write(to: url.appendingPathComponent("HTTPKernel.swift"), atomically: true, encoding: .utf8)
     }
 }
 

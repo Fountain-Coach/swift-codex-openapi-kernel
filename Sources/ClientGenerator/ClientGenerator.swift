@@ -14,7 +14,7 @@ public enum ClientGenerator {
             var path: String { get }
         }
         """
-        try apiRequest.write(to: url.appendingPathComponent("APIRequest.swift"), atomically: true, encoding: .utf8)
+        try (apiRequest + "\n").write(to: url.appendingPathComponent("APIRequest.swift"), atomically: true, encoding: .utf8)
 
         let apiClient = """
         import Foundation
@@ -42,7 +42,7 @@ public enum ClientGenerator {
             }
         }
         """
-        try apiClient.write(to: url.appendingPathComponent("APIClient.swift"), atomically: true, encoding: .utf8)
+        try (apiClient + "\n").write(to: url.appendingPathComponent("APIClient.swift"), atomically: true, encoding: .utf8)
 
         let requestsDir = url.appendingPathComponent("Requests")
         try FileManager.default.createDirectory(at: requestsDir, withIntermediateDirectories: true)
@@ -75,6 +75,6 @@ public enum ClientGenerator {
             public var path: String { "\(path)" }
         }
         """
-        try output.write(to: dir.appendingPathComponent("\(name).swift"), atomically: true, encoding: .utf8)
+        try (output + "\n").write(to: dir.appendingPathComponent("\(name).swift"), atomically: true, encoding: .utf8)
     }
 }
