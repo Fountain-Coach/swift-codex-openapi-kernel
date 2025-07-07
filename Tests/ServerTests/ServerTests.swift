@@ -1,4 +1,5 @@
 import XCTest
+import FoundationNetworking
 @testable import Parser
 @testable import ServerGenerator
 
@@ -22,6 +23,7 @@ final class ServerTests: XCTestCase {
 
         XCTAssertTrue(FileManager.default.fileExists(atPath: outDir.appendingPathComponent("HTTPRequest.swift").path))
         XCTAssertTrue(FileManager.default.fileExists(atPath: outDir.appendingPathComponent("HTTPResponse.swift").path))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: outDir.appendingPathComponent("HTTPServer.swift").path))
         XCTAssertTrue(FileManager.default.fileExists(atPath: outDir.appendingPathComponent("Handlers.swift").path))
         XCTAssertTrue(FileManager.default.fileExists(atPath: outDir.appendingPathComponent("Router.swift").path))
         XCTAssertTrue(FileManager.default.fileExists(atPath: outDir.appendingPathComponent("HTTPKernel.swift").path))
@@ -46,5 +48,18 @@ final class ServerTests: XCTestCase {
         let request = HTTPRequest(method: "GET", path: "/todos")
         let response = try await kernel.handle(request)
         XCTAssertEqual(response.status, 200)
+    }
+
+    func testHTTPServerViaURLSession() async throws {
+        let kernel = HTTPKernel()
+        HTTPServer.register(kernel: kernel)
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [HTTPServer.self]
+        let session = URLSession(configuration: config)
+        let url = URL(string: "http://localhost/todos")!
+        let (data, response) = try await session.data(from: url)
+        let http = response as? HTTPURLResponse
+        XCTAssertEqual(http?.statusCode, 200)
+        XCTAssertEqual(data, Data())
     }
 }
