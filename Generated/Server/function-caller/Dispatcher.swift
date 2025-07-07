@@ -1,14 +1,14 @@
 import Foundation
+import FoundationNetworking
+import ServiceShared
 
 /// Dispatches registered functions by looking them up from the shared
 /// TypesenseClient and performing a simple URLSession call.
 struct FunctionDispatcher {
     enum DispatchError: Error { case notFound }
 
-    let session: URLSession = .shared
-
     func invoke(functionId: String, payload: Data) async throws -> Data {
-        guard let fn = TypesenseClient.shared.functionDetails(id: functionId) else {
+        guard let fn = await TypesenseClient.shared.functionDetails(id: functionId) else {
             throw DispatchError.notFound
         }
         guard let url = URL(string: fn.httpPath) else {
@@ -17,7 +17,7 @@ struct FunctionDispatcher {
         var req = URLRequest(url: url)
         req.httpMethod = fn.httpMethod
         req.httpBody = payload
-        let (data, _) = try await session.data(for: req)
+        let (data, _) = try await URLSession.shared.data(for: req)
         return data
     }
 }

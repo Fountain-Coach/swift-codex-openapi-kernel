@@ -1,4 +1,5 @@
 import Foundation
+import ServiceShared
 
 /// Planner handlers integrating with the LLM Gateway stub.
 public struct Handlers {
@@ -19,7 +20,7 @@ public struct Handlers {
         return HTTPResponse()
     }
     public func plannerListCorpora(_ request: HTTPRequest) async throws -> HTTPResponse {
-        let ids = TypesenseClient.shared.listCorpora()
+        let ids = await TypesenseClient.shared.listCorpora()
         let data = try JSONEncoder().encode(ids)
         return HTTPResponse(body: data)
     }
