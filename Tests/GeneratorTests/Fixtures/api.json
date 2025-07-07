@@ -1,0 +1,19 @@
+{
+  "title": "Sample API",
+  "components": {
+    "schemas": {
+      "Todo": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/todos": {
+      "get": { "operationId": "GetTodos" }
+    }
+  }
+}
