@@ -23,6 +23,7 @@ public enum ClientGenerator {
 
         let apiClient = """
         import Foundation
+        import FoundationNetworking
 
         public protocol HTTPSession {
             func data(for request: URLRequest) async throws -> (Data, URLResponse)
