@@ -1,6 +1,7 @@
 import XCTest
 import IntegrationRuntime
 import NIOHTTP1
+import ServiceShared
 
 @testable import BaselineAwarenessService
 @testable import BaselineAwarenessClient
@@ -32,7 +33,7 @@ final class ServicesIntegrationTests: XCTestCase {
             return IntegrationRuntime.HTTPResponse(status: sresp.status, body: sresp.body)
         }
         let (server, port) = try await startServer(with: kernel)
-        defer { try? await server.stop() }
+        addTeardownBlock { try? await server.stop() }
 
         let client = BaselineAwarenessClient.APIClient(baseURL: URL(string: "http://127.0.0.1:\(port)")!)
         let data = try await client.sendRaw(BaselineAwarenessClient.health_health_get())
@@ -48,7 +49,7 @@ final class ServicesIntegrationTests: XCTestCase {
             return IntegrationRuntime.HTTPResponse(status: sresp.status, body: sresp.body)
         }
         let (server, port) = try await startServer(with: kernel)
-        defer { try? await server.stop() }
+        addTeardownBlock { try? await server.stop() }
 
         let client = BaselineAwarenessClient.APIClient(baseURL: URL(string: "http://127.0.0.1:\(port)")!)
         let initBody = BaselineAwarenessClient.InitIn(corpusId: "c1")
@@ -67,7 +68,7 @@ final class ServicesIntegrationTests: XCTestCase {
             return IntegrationRuntime.HTTPResponse(status: sresp.status, body: sresp.body)
         }
         let (server, port) = try await startServer(with: kernel)
-        defer { try? await server.stop() }
+        addTeardownBlock { try? await server.stop() }
 
         let client = BootstrapClient.APIClient(baseURL: URL(string: "http://127.0.0.1:\(port)")!)
         let data = try await client.sendRaw(BootstrapClient.seedRoles())
@@ -75,7 +76,7 @@ final class ServicesIntegrationTests: XCTestCase {
     }
 
     func testPersistListCorpora() async throws {
-        _ = await PersistService.TypesenseClient.shared.createCorpus(id: "c1")
+        _ = await TypesenseClient.shared.createCorpus(id: "c1")
         let serviceKernel = PersistService.HTTPKernel()
         let kernel = IntegrationRuntime.HTTPKernel { req in
             let sreq = PersistService.HTTPRequest(method: req.method, path: req.path, headers: req.headers, body: req.body)
@@ -83,7 +84,7 @@ final class ServicesIntegrationTests: XCTestCase {
             return IntegrationRuntime.HTTPResponse(status: sresp.status, body: sresp.body)
         }
         let (server, port) = try await startServer(with: kernel)
-        defer { try? await server.stop() }
+        addTeardownBlock { try? await server.stop() }
 
         let client = PersistClient.APIClient(baseURL: URL(string: "http://127.0.0.1:\(port)")!)
         let data = try await client.sendRaw(PersistClient.listCorpora())
@@ -92,8 +93,9 @@ final class ServicesIntegrationTests: XCTestCase {
     }
 
     func testFunctionCallerListFunctions() async throws {
-        let fn = FunctionCallerService.Function(description: "test", function_id: "f1", http_method: "GET", http_path: "http://example.com", name: "fn", parameters_schema: "{}")
-        await FunctionCallerService.TypesenseClient.shared.addFunction(fn)
+        let json = #"{"description":"test","functionId":"f1","httpMethod":"GET","httpPath":"http://example.com","name":"fn"}"#.data(using: .utf8)!
+        let fn = try JSONDecoder().decode(ServiceShared.Function.self, from: json)
+        await TypesenseClient.shared.addFunction(fn)
         let serviceKernel = FunctionCallerService.HTTPKernel()
         let kernel = IntegrationRuntime.HTTPKernel { req in
             let sreq = FunctionCallerService.HTTPRequest(method: req.method, path: req.path, headers: req.headers, body: req.body)
@@ -101,7 +103,7 @@ final class ServicesIntegrationTests: XCTestCase {
             return IntegrationRuntime.HTTPResponse(status: sresp.status, body: sresp.body)
         }
         let (server, port) = try await startServer(with: kernel)
-        defer { try? await server.stop() }
+        addTeardownBlock { try? await server.stop() }
 
         let client = FunctionCallerClient.APIClient(baseURL: URL(string: "http://127.0.0.1:\(port)")!)
         let data = try await client.sendRaw(FunctionCallerClient.list_functions())
@@ -110,7 +112,7 @@ final class ServicesIntegrationTests: XCTestCase {
     }
 
     func testPlannerListCorpora() async throws {
-        _ = await PlannerService.TypesenseClient.shared.createCorpus(id: "p1")
+        _ = await TypesenseClient.shared.createCorpus(id: "p1")
         let serviceKernel = PlannerService.HTTPKernel()
         let kernel = IntegrationRuntime.HTTPKernel { req in
             let sreq = PlannerService.HTTPRequest(method: req.method, path: req.path, headers: req.headers, body: req.body)
@@ -118,7 +120,7 @@ final class ServicesIntegrationTests: XCTestCase {
             return IntegrationRuntime.HTTPResponse(status: sresp.status, body: sresp.body)
         }
         let (server, port) = try await startServer(with: kernel)
-        defer { try? await server.stop() }
+        addTeardownBlock { try? await server.stop() }
 
         let client = PlannerClient.APIClient(baseURL: URL(string: "http://127.0.0.1:\(port)")!)
         let data = try await client.sendRaw(PlannerClient.planner_list_corpora())
@@ -134,7 +136,7 @@ final class ServicesIntegrationTests: XCTestCase {
             return IntegrationRuntime.HTTPResponse(status: sresp.status, body: sresp.body)
         }
         let (server, port) = try await startServer(with: kernel)
-        defer { try? await server.stop() }
+        addTeardownBlock { try? await server.stop() }
 
         let client = ToolsFactoryClient.APIClient(baseURL: URL(string: "http://127.0.0.1:\(port)")!)
         let data = try await client.sendRaw(ToolsFactoryClient.list_tools())
@@ -149,7 +151,7 @@ final class ServicesIntegrationTests: XCTestCase {
             return IntegrationRuntime.HTTPResponse(status: sresp.status, body: sresp.body)
         }
         let (server, port) = try await startServer(with: kernel)
-        defer { try? await server.stop() }
+        addTeardownBlock { try? await server.stop() }
 
         let client = LLMGatewayClientSDK.APIClient(baseURL: URL(string: "http://127.0.0.1:\(port)")!)
         let data = try await client.sendRaw(LLMGatewayClientSDK.metrics_metrics_get())

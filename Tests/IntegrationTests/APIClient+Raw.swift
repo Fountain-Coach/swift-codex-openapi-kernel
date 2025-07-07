@@ -1,4 +1,5 @@
 import Foundation
+import FoundationNetworking
 @testable import BaselineAwarenessClient
 @testable import BootstrapClient
 @testable import PersistClient

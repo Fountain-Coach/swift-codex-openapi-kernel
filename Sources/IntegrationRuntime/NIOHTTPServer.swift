@@ -2,7 +2,7 @@
 @preconcurrency import NIOHTTP1
 import Foundation
 
-public final class NIOHTTPServer {
+public final class NIOHTTPServer: @unchecked Sendable {
     let kernel: HTTPKernel
     let group: EventLoopGroup
     var channel: Channel?

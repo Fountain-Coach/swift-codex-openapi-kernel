@@ -2,7 +2,7 @@ import AsyncHTTPClient
 import NIOCore
 import NIOHTTP1
 
-public final class AsyncHTTPClientDriver: HTTPClientProtocol {
+public final class AsyncHTTPClientDriver: HTTPClientProtocol, @unchecked Sendable {
     let client: HTTPClient
 
     public init(eventLoopGroupProvider: HTTPClient.EventLoopGroupProvider = .createNew) {
