@@ -1,4 +1,5 @@
 import Foundation
+import ServiceShared
 
 public struct Router {
     public var handlers: Handlers

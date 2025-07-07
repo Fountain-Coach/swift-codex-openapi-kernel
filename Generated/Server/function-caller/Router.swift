@@ -1,4 +1,5 @@
 import Foundation
+import ServiceShared
 
 public struct Router {
     public var handlers: Handlers
@@ -15,6 +16,9 @@ public struct Router {
             return try await handlers.listFunctions(request)
         case ("POST", "/functions/{function_id}/invoke"):
             return try await handlers.invokeFunction(request)
+        case ("GET", "/metrics"):
+            let text = await PrometheusAdapter.shared.exposition()
+            return HTTPResponse(status: 200, headers: ["Content-Type": "text/plain"], body: Data(text.utf8))
         default:
             return HTTPResponse(status: 404)
         }

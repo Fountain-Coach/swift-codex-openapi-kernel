@@ -1,4 +1,5 @@
 import Foundation
+import ServiceShared
 
 public struct Router {
     public var handlers: Handlers
@@ -13,6 +14,9 @@ public struct Router {
             return try await handlers.registerOpenapi(request)
         case ("GET", "/tools"):
             return try await handlers.listTools(request)
+        case ("GET", "/metrics"):
+            let text = await PrometheusAdapter.shared.exposition()
+            return HTTPResponse(status: 200, headers: ["Content-Type": "text/plain"], body: Data(text.utf8))
         default:
             return HTTPResponse(status: 404)
         }
