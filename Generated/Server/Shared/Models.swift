@@ -16,6 +16,7 @@ public struct Baseline: Codable, Sendable {
     public let content: String
     public let corpusId: String
 
+
     public init(baselineId: String, content: String, corpusId: String) {
         self.baselineId = baselineId
         self.content = content
