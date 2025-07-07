@@ -5,7 +5,11 @@ public protocol HTTPSession {
     func data(for request: URLRequest) async throws -> (Data, URLResponse)
 }
 
-extension URLSession: HTTPSession {}
+extension URLSession: HTTPSession {
+    public func data(for request: URLRequest) async throws -> (Data, URLResponse) {
+        try await self.data(for: request, delegate: nil)
+    }
+}
 
 public struct APIClient {
     let baseURL: URL
