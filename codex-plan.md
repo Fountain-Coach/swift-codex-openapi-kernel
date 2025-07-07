@@ -7,23 +7,23 @@ This plan defines how Codex should build a Swift 6-native OpenAPI code generator
 ## 🪪 Phase 0 · Repository Identity
 
 - [ ] Create `agent.swift` to describe Codex orchestration behavior.
-- [ ] Create `.codex` manifest to document structure, triggers, CLI, and test commands.
+- [x] Create `.codex` manifest to document structure, triggers, CLI, and test commands.
 
 ---
 
 ## 🧱 Phase 1 · Project Scaffolding
 
-- [ ] Initialize SwiftPM layout.
-- [ ] Define CLI product in `Package.swift`.
-- [ ] Add `Sources/Generator/` and `Tests/GeneratorTests/`.
-- [ ] Create a minimal `OpenAPI/api.yaml` input spec.
+- [x] Initialize SwiftPM layout.
+- [x] Define CLI product in `Package.swift`.
+- [x] Add `Sources/Generator/` and `Tests/GeneratorTests/`.
+- [x] Create a minimal `OpenAPI/api.yaml` input spec.
 
 ---
 
 ## 📜 Phase 2 · OpenAPI 3.1 Parser
 
-- [ ] Create `OpenAPISpec.swift` (spec structs).
-- [ ] Implement `SpecLoader.swift` (loads YAML or JSON).
+- [x] Create `OpenAPISpec.swift` (spec structs).
+- [x] Implement `SpecLoader.swift` (loads YAML or JSON).
 - [ ] Add tests for spec parsing and validation.
 
 ---
