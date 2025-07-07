@@ -60,7 +60,7 @@ public struct Handlers {
     }
 
     public func addfunction(_ request: HTTPRequest) async throws -> HTTPResponse {
-        guard let function = try? JSONDecoder().decode(Function.self, from: request.body) else {
+        guard let function = try? JSONDecoder().decode(ServiceShared.Function.self, from: request.body) else {
             return HTTPResponse(status: 400)
         }
         await typesense.addFunction(function)

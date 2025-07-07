@@ -14,7 +14,7 @@ public final class AsyncHTTPClientDriver: HTTPClientProtocol {
         request.method = method
         request.headers = headers
         if let body = body {
-            request.body = .byteBuffer(body)
+            request.body = .bytes(body)
         }
         let response = try await client.execute(request, timeout: .seconds(5))
         let bytes = try await response.body.collect(upTo: 1 << 20)
