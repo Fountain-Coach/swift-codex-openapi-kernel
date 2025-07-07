@@ -47,10 +47,10 @@ This plan defines how Codex should build a Swift 6-native OpenAPI code generator
 
 ## 🌀 Phase 5 · Native HTTP Server Generator
 
-- [ ] Emit `HTTPRequest.swift` and `HTTPResponse.swift`.
-- [ ] Build `Router.swift` that statically dispatches by method + path.
-- [ ] Emit `Handlers.swift` with stubs for each route.
-- [ ] Implement `HTTPKernel.swift` to launch the server.
+- [x] Emit `HTTPRequest.swift` and `HTTPResponse.swift`.
+- [x] Build `Router.swift` that statically dispatches by method + path.
+- [x] Emit `Handlers.swift` with stubs for each route.
+- [x] Implement `HTTPKernel.swift` to launch the server.
 
 ---
 
