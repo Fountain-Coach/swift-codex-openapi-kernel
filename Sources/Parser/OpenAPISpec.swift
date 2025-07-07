@@ -5,6 +5,17 @@ public struct OpenAPISpec: Codable {
         public var schemas: [String: Schema]
     }
 
+    public struct Operation: Codable {
+        public var operationId: String
+    }
+
+    public struct PathItem: Codable {
+        public var get: Operation?
+        public var post: Operation?
+        public var put: Operation?
+        public var delete: Operation?
+    }
+
     public struct Schema: Codable {
         public struct Property: Codable {
             public var type: String
@@ -16,6 +27,7 @@ public struct OpenAPISpec: Codable {
 
     public let title: String
     public var components: Components?
+    public var paths: [String: PathItem]?
 }
 
 extension OpenAPISpec.Schema.Property {
