@@ -54,11 +54,25 @@ swift-codex-openapi-kernel/
 
 ## 🚀 Getting Started
 
-```bash
-swift build -c release
-./regenerate.sh
-swift test
-```
+1. **Build the generator**
+   ```bash
+   swift build -c release
+   ```
+2. **Generate code from `api.yaml`**
+   ```bash
+   ./regenerate.sh
+   ```
+   This command reads `OpenAPI/api.yaml` and writes the client and server code
+   under `Generated/`.
+3. **Run the test suite**
+   ```bash
+   swift test
+   ```
+
+### Updating the spec
+
+Edit `OpenAPI/api.yaml` to add or modify operations. Re-run
+`./regenerate.sh` whenever the spec changes to regenerate the Swift sources.
 
 ---
 
@@ -70,6 +84,13 @@ Everything in this repo is:
 - Deterministically emitted
 - Fully visible in Git
 - Designed to be test-driven and Codex-readable
+
+---
+
+## 📦 Continuous Integration
+
+The `.github/workflows/ci.yml` workflow builds the package and runs the tests on
+every push and pull request using Swift 6.
 
 ---
 

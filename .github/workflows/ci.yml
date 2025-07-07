@@ -1,0 +1,19 @@
+name: Swift CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: swift-actions/setup-swift@v1
+        with:
+          swift-version: '6.1'
+      - name: Build
+        run: swift build -v
+      - name: Test
+        run: swift test -v
