@@ -115,16 +115,22 @@ every push and pull request using Swift 6.
 
 Each generated server directory contains a `Dockerfile` that compiles the stub
 server into a minimal container. To build and run the `baseline-awareness`
-service:
+service and expose it on port **8080**:
 
 ```bash
 cd Generated/Server/baseline-awareness
 docker build -t baseline-awareness .
-docker run --rm baseline-awareness
+docker run --rm -p 8080:8080 baseline-awareness
 ```
 
-The container simply starts the Swift binary and prints a message. Networking is
-not yet implemented.
+Once running, verify the service is alive:
+
+```bash
+curl http://localhost:8080/health
+```
+
+The container starts the Swift service and responds on `http://localhost:8080`.
+See [deployment.md](Docs/StatusQuo/Reports/deployment.md) for more details.
 
 ### Docker Compose
 To build and run all services together:

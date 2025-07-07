@@ -33,6 +33,12 @@ docker build -f Generated/Server/baseline-awareness/Dockerfile -t baseline-aware
 docker run -p 8080:8080 baseline-awareness
 ```
 
+After the container starts, verify the health endpoint:
+
+```bash
+curl http://localhost:8080/health
+```
+
 ## Stopping and Removing Containers
 
 Press `Ctrl+C` to stop the running services, then remove containers with:
