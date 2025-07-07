@@ -11,13 +11,32 @@ public struct Handlers {
         self.typesense = typesense
     }
     public func addbaseline(_ request: HTTPRequest) async throws -> HTTPResponse {
-        return HTTPResponse()
+        guard let corpusId = request.path.split(separator: "/").dropFirst(2).first,
+              let model = try? JSONDecoder().decode(Baseline.self, from: request.body) else {
+            return HTTPResponse(status: 400)
+        }
+        await typesense.addBaseline(model)
+        let data = try JSONEncoder().encode(SuccessResponse(message: "stored"))
+        return HTTPResponse(body: data)
     }
+
     public func listreflections(_ request: HTTPRequest) async throws -> HTTPResponse {
-        return HTTPResponse()
+        guard let corpusId = request.path.split(separator: "/").dropFirst(2).first else {
+            return HTTPResponse(status: 400)
+        }
+        let count = await typesense.reflectionCount(for: String(corpusId))
+        let data = try JSONEncoder().encode(["count": count])
+        return HTTPResponse(body: data)
     }
+
     public func addreflection(_ request: HTTPRequest) async throws -> HTTPResponse {
-        return HTTPResponse()
+        guard let corpusId = request.path.split(separator: "/").dropFirst(2).first,
+              let reflection = try? JSONDecoder().decode(Reflection.self, from: request.body) else {
+            return HTTPResponse(status: 400)
+        }
+        await typesense.addReflection(reflection)
+        let data = try JSONEncoder().encode(SuccessResponse(message: "stored"))
+        return HTTPResponse(body: data)
     }
     public func listcorpora(_ request: HTTPRequest) async throws -> HTTPResponse {
         let ids = await typesense.listCorpora()
@@ -41,7 +60,7 @@ public struct Handlers {
     }
 
     public func addfunction(_ request: HTTPRequest) async throws -> HTTPResponse {
-        guard let function = try? JSONDecoder().decode(Function.self, from: request.body) else {
+        guard let function = try? JSONDecoder().decode(ServiceShared.Function.self, from: request.body) else {
             return HTTPResponse(status: 400)
         }
         await typesense.addFunction(function)

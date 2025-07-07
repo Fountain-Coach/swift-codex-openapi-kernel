@@ -12,8 +12,9 @@ Spec path: `FountainAi/openAPI/v1/baseline-awareness.yml` (version 1.0.0).
 - `GET /health` returns a structured JSON status while other handlers remain stubs
 - A `Dockerfile` builds the service binary, and build/run instructions appear in the repository README
 - New integration tests now cover corpus initialization and baseline ingestion in addition to the `/health` endpoint
-- An in-memory `BaselineStore` persists baselines, drifts, patterns and reflections during tests
+- The `BaselineStore` now persists via `TypesenseClient`, sharing the persistence service infrastructure
 
 ## Next Steps toward Production
-- Integrate the in-memory store with the Persistence service and implement real analytics logic
+- Implement production analytics logic on top of the new persistence layer
 - Expand documentation on building and running the service container
+- Ensure integration tests run on both Linux and macOS using AsyncHTTPClient and the NIO server

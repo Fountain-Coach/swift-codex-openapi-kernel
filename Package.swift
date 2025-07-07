@@ -23,6 +23,7 @@ let package = Package(
         // Generated service modules used for integration testing
         .target(
             name: "BaselineAwarenessService",
+            dependencies: ["ServiceShared"],
             path: "Generated/Server",
             sources: [
                 "baseline-awareness/HTTPKernel.swift",
@@ -30,7 +31,8 @@ let package = Package(
                 "baseline-awareness/Handlers.swift",
                 "baseline-awareness/Models.swift",
                 "baseline-awareness/HTTPRequest.swift",
-                "baseline-awareness/HTTPResponse.swift"
+                "baseline-awareness/HTTPResponse.swift",
+                "baseline-awareness/BaselineStore.swift"
             ]
         ),
         .target(name: "BaselineAwarenessClient", path: "Generated/Client/baseline-awareness"),

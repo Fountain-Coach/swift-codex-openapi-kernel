@@ -9,10 +9,12 @@ public struct Handlers {
     }
 
     public func readsemanticarc(_ request: HTTPRequest, body: NoBody?) async throws -> HTTPResponse {
-        guard let corpusId = request.query["corpus_id"] else {
+        let comps = URLComponents(string: request.path)
+        let corpusId = comps?.queryItems?.first(where: { $0.name == "corpus_id" })?.value
+        guard let id = corpusId else {
             return HTTPResponse(status: 400)
         }
-        let data = Data("arc for \(corpusId)".utf8)
+        let data = Data("arc for \(id)".utf8)
         return HTTPResponse(body: data)
     }
 
@@ -47,10 +49,12 @@ public struct Handlers {
     }
 
     public func listhistoryanalytics(_ request: HTTPRequest, body: NoBody?) async throws -> HTTPResponse {
-        guard let corpusId = request.query["corpus_id"] else {
+        let comps = URLComponents(string: request.path)
+        let corpusId = comps?.queryItems?.first(where: { $0.name == "corpus_id" })?.value
+        guard let id = corpusId else {
             return HTTPResponse(status: 400)
         }
-        let data = Data("analytics for \(corpusId)".utf8)
+        let data = Data("analytics for \(id)".utf8)
         return HTTPResponse(body: data)
     }
 
