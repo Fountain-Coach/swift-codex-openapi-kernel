@@ -36,6 +36,7 @@ This repository implements a complete code generation workflow that:
 ```
 swift-codex-openapi-kernel/
 ├── FountainAi/openAPI/           ← Service specs in OpenAPI 3.1 format
+│   └── README.md                 ← Catalog of services and entrypoints
 ├── Sources/
 │   └── Generator/                ← CLI tool source
 ├── Generated/
@@ -64,7 +65,14 @@ swift-codex-openapi-kernel/
    This command reads every `*.yml` spec under `FountainAi/openAPI/` and
    emits a dedicated client and server for each service under
    `Generated/Client/<Service>/` and `Generated/Server/<Service>/`.
-3. **Run the test suite**
+3. **Generate code for a single service**
+   ```bash
+   swift run generator --input FountainAi/openAPI/bootstrap.yml --output Generated/tmp
+   cp -r Generated/tmp/Client/. Generated/Client/bootstrap/
+   cp -r Generated/tmp/Server/. Generated/Server/bootstrap/
+   ```
+   Replace `bootstrap.yml` with another spec to target a different service.
+4. **Run the test suite**
    ```bash
    swift test
    ```
@@ -73,6 +81,12 @@ swift-codex-openapi-kernel/
 
 Add or modify any service spec under `FountainAi/openAPI/`. Re-run
 `./regenerate.sh` whenever a spec changes to regenerate the Swift sources.
+
+### Troubleshooting
+
+- **Parser errors** – ensure each YAML file is valid OpenAPI 3.1. The generator prints the failing file path on error.
+- **Missing Swift toolchain** – install dependencies with `sudo apt-get update && sudo apt-get install -y clang libicu-dev swift`.
+- **Build failures** – run `swift build -v` to see compilation output and verify you generated sources for the intended service.
 
 ---
 
