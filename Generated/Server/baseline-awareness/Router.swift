@@ -1,4 +1,5 @@
 import Foundation
+import ServiceShared
 
 public struct Router {
     public var handlers: Handlers
@@ -33,6 +34,9 @@ public struct Router {
         case ("GET", "/health"):
             let body = try? JSONDecoder().decode(NoBody.self, from: request.body)
             return try await handlers.healthHealthGet(request, body: body)
+        case ("GET", "/metrics"):
+            let text = await PrometheusAdapter.shared.exposition()
+            return HTTPResponse(status: 200, headers: ["Content-Type": "text/plain"], body: Data(text.utf8))
         case ("GET", "/corpus/reflections/{corpus_id}"):
             let body = try? JSONDecoder().decode(NoBody.self, from: request.body)
             return try await handlers.listreflections(request, body: body)

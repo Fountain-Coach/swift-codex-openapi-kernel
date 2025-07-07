@@ -38,6 +38,7 @@ let package = Package(
         .target(name: "BaselineAwarenessClient", path: "Generated/Client/baseline-awareness"),
         .target(
             name: "BootstrapService",
+            dependencies: ["ServiceShared"],
             path: "Generated/Server",
             sources: [
                 "bootstrap/HTTPKernel.swift",
@@ -95,6 +96,7 @@ let package = Package(
         .target(name: "PlannerClient", path: "Generated/Client/planner"),
         .target(
             name: "ToolsFactoryService",
+            dependencies: ["ServiceShared"],
             path: "Generated/Server",
             sources: [
                 "tools-factory/HTTPKernel.swift",
@@ -108,6 +110,7 @@ let package = Package(
         .target(name: "ToolsFactoryClient", path: "Generated/Client/tools-factory"),
         .target(
             name: "LLMGatewayService",
+            dependencies: ["ServiceShared"],
             path: "Generated/Server",
             sources: [
                 "llm-gateway/HTTPKernel.swift",

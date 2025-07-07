@@ -1,4 +1,5 @@
 import Foundation
+import ServiceShared
 
 public struct HTTPKernel {
     let router: Router
@@ -8,6 +9,8 @@ public struct HTTPKernel {
     }
 
     public func handle(_ request: HTTPRequest) async throws -> HTTPResponse {
-        try await router.route(request)
+        let resp = try await router.route(request)
+        await PrometheusAdapter.shared.record(service: "llm-gateway", path: request.path)
+        return resp
     }
 }
