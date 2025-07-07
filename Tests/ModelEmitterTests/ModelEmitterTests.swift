@@ -36,6 +36,9 @@ final class ModelEmitterTests: XCTestCase {
         let expected = try String(contentsOf: fixtureURL)
 
         XCTAssertEqual(generated, expected)
+
+        let sharedURL = outDir.appendingPathComponent("SharedModels/Sources/SharedModels/Models.swift")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: sharedURL.path))
     }
 }
 

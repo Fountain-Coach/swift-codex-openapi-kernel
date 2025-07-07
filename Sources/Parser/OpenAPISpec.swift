@@ -7,25 +7,33 @@ public struct OpenAPISpec: Codable {
     }
 
     /// Basic JSON Schema representation used throughout the spec.
-    public struct Schema: Codable {
-        public struct Property: Codable {
+    public final class Schema: Codable {
+        public final class Property: Codable {
             public var ref: String?
             public var type: String?
+            public var enumValues: [String]?
+            public var items: Schema?
 
             enum CodingKeys: String, CodingKey {
                 case ref = "$ref"
                 case type
+                case enumValues = "enum"
+                case items
             }
         }
 
         public var ref: String?
         public var type: String?
         public var properties: [String: Property]?
+        public var enumValues: [String]?
+        public var items: Schema?
 
         enum CodingKeys: String, CodingKey {
             case ref = "$ref"
             case type
             case properties
+            case enumValues = "enum"
+            case items
         }
     }
 
@@ -91,6 +99,33 @@ extension OpenAPISpec.Schema.Property {
         case "string": return "String"
         case "integer": return "Int"
         case "boolean": return "Bool"
+        case "array":
+            if let itemType = items?.swiftType {
+                return "[\(itemType)]"
+            } else {
+                return "[String]"
+            }
+        default: return "String"
+        }
+    }
+}
+
+extension OpenAPISpec.Schema {
+    public var swiftType: String {
+        if let ref {
+            return ref.components(separatedBy: "/").last ?? ref
+        }
+        guard let type else { return "String" }
+        switch type {
+        case "string": return "String"
+        case "integer": return "Int"
+        case "boolean": return "Bool"
+        case "array":
+            if let itemType = items?.swiftType {
+                return "[\(itemType)]"
+            } else {
+                return "[String]"
+            }
         default: return "String"
         }
     }
