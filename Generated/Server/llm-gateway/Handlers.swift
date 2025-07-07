@@ -7,7 +7,7 @@ public struct Handlers {
         return HTTPResponse()
     }
     public func metricsMetricsGet(_ request: HTTPRequest) async throws -> HTTPResponse {
-        let text = PrometheusAdapter.shared.exposition()
+        let text = await PrometheusAdapter.shared.exposition()
         return HTTPResponse(status: 200, headers: ["Content-Type": "text/plain"], body: Data(text.utf8))
     }
 }

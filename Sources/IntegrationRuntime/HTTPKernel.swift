@@ -1,6 +1,6 @@
 import Foundation
 
-public struct HTTPKernel {
+public struct HTTPKernel: @unchecked Sendable {
     let router: (HTTPRequest) async throws -> HTTPResponse
 
     public init(route: @escaping (HTTPRequest) async throws -> HTTPResponse) {
