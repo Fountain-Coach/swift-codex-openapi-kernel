@@ -11,8 +11,9 @@ Spec path: `FountainAi/openAPI/v1/baseline-awareness.yml` (version 1.0.0).
 - Router decodes JSON bodies into models and forwards them to typed handler methods
 - `GET /health` returns a structured JSON status while other handlers remain stubs
 - A `Dockerfile` builds the service binary, and build/run instructions appear in the repository README
-- New integration test verifies the `/health` endpoint using the generated client
+- New integration tests now cover corpus initialization and baseline ingestion in addition to the `/health` endpoint
+- An in-memory `BaselineStore` persists baselines, drifts, patterns and reflections during tests
 
 ## Next Steps toward Production
-- Add persistence adapters and real analytics logic
+- Integrate the in-memory store with the Persistence service and implement real analytics logic
 - Expand documentation on building and running the service container
