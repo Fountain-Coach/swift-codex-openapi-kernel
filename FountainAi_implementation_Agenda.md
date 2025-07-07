@@ -1,6 +1,6 @@
 # FountainAi Implementation Agenda
 
-This agenda outlines the steps to implement and document FountainAI's services and clients using the OpenAPI definitions under `FountainAi/openAPI/`. The goal is to evolve from the simple demonstration spec located at `OpenAPI/api.yaml` to a fully generated set of Swift servers and client SDKs for all FountainAI services.
+This agenda outlines the steps to implement and document FountainAI's services and clients using the OpenAPI definitions under `FountainAi/openAPI/<version>/`. The goal is to evolve from the simple demonstration spec located at `OpenAPI/api.yaml` to a fully generated set of Swift servers and client SDKs for all FountainAI services.
 
 ## 1. Start from the Simplified Spec
 
@@ -14,15 +14,15 @@ This agenda outlines the steps to implement and document FountainAI's services a
 
 ## 2. Introduce FountainAI Service APIs
 
-Each service has its own OpenAPI file in `FountainAi/openAPI/`:
+Each service has its own OpenAPI file in `FountainAi/openAPI/<version>/`:
 
-- `baseline-awareness.yml` – manages baselines, drift, reflection data, and analytics.
-- `bootstrap.yml` – initializes corpora and seeds default roles.
-- `function-caller.yml` – maps OpenAI function-calling plans to HTTP operations.
-- `persist.yml` – persistence and semantic indexing via Typesense.
-- `planner.yml` – orchestrates planning workflows for the LLM.
-- `llm-gateway.yml` – proxies requests to any LLM with function-calling support.
-- `tools-factory.yml` – registers and manages tool definitions.
+- `v1/baseline-awareness.yml` – manages baselines, drift, reflection data, and analytics.
+- `v1/bootstrap.yml` – initializes corpora and seeds default roles.
+- `v1/function-caller.yml` – maps OpenAI function-calling plans to HTTP operations.
+- `v1/persist.yml` – persistence and semantic indexing via Typesense.
+- `v0/planner.yml` – orchestrates planning workflows for the LLM.
+- `v2/llm-gateway.yml` – proxies requests to any LLM with function-calling support.
+- `v1/tools-factory.yml` – registers and manages tool definitions.
 
 For each service:
 
