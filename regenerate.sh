@@ -4,8 +4,8 @@ set -euo pipefail
 # Remove previous generated output
 rm -rf Generated/Client Generated/Server
 
-# Generate clients and servers for each FountainAI service
-for spec in FountainAi/openAPI/*.yml; do
+# Generate clients and servers for each FountainAI service version
+for spec in FountainAi/openAPI/*/*.yml; do
     service=$(basename "$spec" .yml)
     outDir="Generated/$service"
     rm -rf "$outDir"
