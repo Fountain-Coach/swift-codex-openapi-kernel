@@ -1,6 +1,6 @@
 # Cross-Platform Integration Testing Approach
 
-This document outlines an alternative to the current `URLSession`-based runtime so that generated clients and servers compile and run on both Linux and macOS. The goal is to enable async integration tests without relying on platform-specific frameworks.
+This document describes the cross-platform runtime now used for integration testing. Generated clients and servers compile and run on both Linux and macOS using `AsyncHTTPClient` and `swift-nio`.
 
 ## Use `AsyncHTTPClient`
 

@@ -22,7 +22,7 @@ To start all containers:
 docker-compose up
 ```
 
-The services currently print a startup message. Networking and persistent storage are not yet implemented.
+The services start minimal Swift HTTP servers that handle simple JSON requests. Persistence uses an in-memory `TypesenseClient`.
 
 ### Running a Single Service
 
@@ -47,4 +47,4 @@ Press `Ctrl+C` to stop the running services, then remove containers with:
 docker-compose down
 ```
 
-This workflow prepares the project for a production environment once networking and persistence layers are added.
+This workflow lets you run the microservices locally. Future updates will add full networking and durable persistence.
