@@ -12,6 +12,16 @@ final class ParserTests: XCTestCase {
         XCTAssertEqual(spec.title, "My API")
     }
 
+    func testSpecLoaderParsesYAMLTitle() throws {
+        let yaml = "title: My API"
+        let tmpDir = FileManager.default.temporaryDirectory
+        let fileURL = tmpDir.appendingPathComponent("spec.yaml")
+        try yaml.write(to: fileURL, atomically: true, encoding: .utf8)
+
+        let spec = try SpecLoader.load(from: fileURL)
+        XCTAssertEqual(spec.title, "My API")
+    }
+
     func testSpecValidationRejectsEmptyTitle() throws {
         let spec = OpenAPISpec(title: "")
         XCTAssertThrowsError(try SpecValidator.validate(spec)) { error in

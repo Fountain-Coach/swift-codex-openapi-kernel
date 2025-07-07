@@ -9,8 +9,11 @@ let package = Package(
     products: [
         .executable(name: "generator", targets: ["Generator"]),
     ],
+    dependencies: [
+        .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.0")
+    ],
     targets: [
-        .target(name: "Parser"),
+        .target(name: "Parser", dependencies: ["Yams"]),
         .target(name: "ModelEmitter", dependencies: ["Parser"]),
         .target(name: "ClientGenerator", dependencies: ["Parser"]),
         .target(name: "ServerGenerator", dependencies: ["Parser"]),
